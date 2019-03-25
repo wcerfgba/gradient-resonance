@@ -70,10 +70,10 @@ vec4 bg(vec2 st) {
 // offset along the vertical. Each square has the same gradient as the
 // background.
 vec4 square(vec2 st) {
-    float scale = 0.2;
+    float scale = 0.15;
     float offset_x = 0.106;
     float phase_x = (st.x + offset_x) / scale;
-    float offset_y = offset_x + 0.15 * floor(phase_x);
+    float offset_y = offset_x + 0.1 * floor(phase_x);
     float phase_y = (st.y + offset_y) / scale;
 
     vec2 square_st = vec2(phase_x - floor(phase_x), phase_y - floor(phase_y));
