@@ -59,7 +59,7 @@ vec3 hsl2rgb(float h, float s, float l) {
 // The background is a simple gradient from top to bottom.
 vec4 bg(vec2 st) {
     vec2 mouse_uv = u_mouse.xy / u_resolution.xy;
-    float hue_top =  mouse_uv.x;
+    float hue_top =  mod(mouse_uv.x, 1.);
     float hue_bottom = mod(mouse_uv.x + mouse_uv.y, 1.);
     vec3 color_bottom = hsl2rgb(vec3(hue_bottom, 1., 0.5));
     vec3 color_top = hsl2rgb(vec3(hue_top, 1., 0.5));
