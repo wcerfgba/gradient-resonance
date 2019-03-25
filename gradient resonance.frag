@@ -58,8 +58,11 @@ vec3 hsl2rgb(float h, float s, float l) {
 
 // The background is a simple gradient from top to bottom.
 vec4 bg(vec2 st) {
-    vec3 color_top = hsl2rgb(vec3(180./360., 1., 0.5));
-    vec3 color_bottom = hsl2rgb(vec3(60./360., 1., 0.5));
+    vec2 mouse_uv = u_mouse.xy / u_resolution.xy;
+    float hue_top =  mouse_uv.x;
+    float hue_bottom = mod(mouse_uv.x + mouse_uv.y, 1.);
+    vec3 color_bottom = hsl2rgb(vec3(hue_bottom, 1., 0.5));
+    vec3 color_top = hsl2rgb(vec3(hue_top, 1., 0.5));
 
     vec3 color = st.y * color_top + (1. - st.y) * color_bottom;  
     
@@ -72,12 +75,13 @@ vec4 bg(vec2 st) {
 vec4 square(vec2 st) {
     float scale = 0.15;
     float offset_x = 0.106;
-    float phase_x = (st.x + offset_x) / scale;
-    float offset_y = offset_x + 0.09 * floor(phase_x);
-    float phase_y = (st.y + offset_y) / scale;
+    float column = (st.x + offset_x) / scale;
+    float offset_y = offset_x + 0.09 * floor(column);
+    float row = (st.y + offset_y) / scale;
+    // TODO: recalc as inset squares over whole grid. experiment with spacing
 
-    vec2 square_st = vec2(phase_x - floor(phase_x), phase_y - floor(phase_y));
-    float a = floor((mod(floor(phase_x), 2.) + mod(floor(phase_y), 2.))  / 2.);
+    vec2 square_st = vec2(column - floor(column), row - floor(row));
+    float a = floor((mod(floor(column), 2.) + mod(floor(row), 2.))  / 2.);
 
     return vec4(bg(square_st).xyz, a);
 }
