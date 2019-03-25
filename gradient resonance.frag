@@ -7,6 +7,9 @@ uniform vec2 u_mouse;
 uniform float u_time;
 
 
+
+// From https://github.com/Jam3/glsl-hsl2rgb
+
 float hue2rgb(float f1, float f2, float hue) {
     if (hue < 0.0)
         hue += 1.0;
@@ -51,38 +54,42 @@ vec3 hsl2rgb(float h, float s, float l) {
 }
 
 
+// Gradient Resonance
 
-vec4 bg(vec2 st, float flip) {
+// The background is a simple gradient from top to bottom.
+vec4 bg(vec2 st) {
     vec3 color_top = hsl2rgb(vec3(180./360., 1., 0.5));
     vec3 color_bottom = hsl2rgb(vec3(60./360., 1., 0.5));
 
-    vec3 color = (1. - flip) * (st.y * color_top + (1. - st.y) * color_bottom);  
+    vec3 color = st.y * color_top + (1. - st.y) * color_bottom;  
     
     return vec4(color, 1.);
 }
 
-// returns color of square, with 
+// We draw a grid of squares spaced by unit width. Each column is slightly 
+// offset along the vertical. Each square has the same gradient as the
+// background.
 vec4 square(vec2 st) {
-    
-    float scale = 0.124;
+    float scale = 0.2;
     float offset_x = 0.106;
     float phase_x = (st.x + offset_x) / scale;
-    float offset_y = offset_x + 5. * floor(phase_x);
+    float offset_y = offset_x + 0.15 * floor(phase_x);
     float phase_y = (st.y + offset_y) / scale;
-    vec2 phase = vec2(phase_x, phase_y);
-    vec2 square_st = vec2(phase.x - floor(phase.x), phase.y - floor(phase.y));
-    float a = floor((mod(floor(phase.x), 2.) + mod(floor(phase.y), 2.))  / 2.);
 
-    vec4 color = bg(square_st, 0.);
-    return vec4(color.xyz, a);
+    vec2 square_st = vec2(phase_x - floor(phase_x), phase_y - floor(phase_y));
+    float a = floor((mod(floor(phase_x), 2.) + mod(floor(phase_y), 2.))  / 2.);
+
+    return vec4(bg(square_st).xyz, a);
 }
 
-
-
+// The painting is a composition of the squares on top of the background.
 void main() {
     vec2 st = gl_FragCoord.xy/u_resolution.y;
+    if (u_resolution.x < u_resolution.y) {
+        st = gl_FragCoord.xy/u_resolution.x;
+    }
 
-    vec4 bg = bg(st, 0.);
+    vec4 bg = bg(st);
     vec4 square = square(st);
     
     vec3 color = (bg.xyz * (1. - square.a)) + (square.xyz * square.a);
