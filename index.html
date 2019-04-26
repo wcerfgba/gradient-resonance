@@ -11,6 +11,10 @@
         padding: 0;
       }
 
+      html {
+        overflow: hidden;
+      }
+
       html, body {
         width: 100%;
         height: 100%;
@@ -18,6 +22,33 @@
 
       canvas {
         display: block;
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .point {
+        position: absolute;
+        font-size: 0.8rem;
+        font-family: sans-serif;
+        padding-left: 4px;
+      }
+
+      .point::before {
+        content: '';
+        position: absolute;
+        left: -2px;
+        width: 4px;
+        height: 4px;
+        border-radius: 2px;
+        margin-right: 2px;
+        background: #fff;
+        mix-blend-mode: difference;
       }
     </style>
   </head>
@@ -32,5 +63,12 @@
       resize();
       window.addEventListener('resize', resize);
     </script>
+    <div class="overlay">
+      <div class="point" style="left: 0%; top: 16.666%;">Red/Violet</div>
+      <div class="point" style="left: 0%; top: 11.333%;">Red/Violet -> Pinker</div>
+      <div class="point" style="left: 50%; top: 33.333%;">Cyan/Yellow</div>
+      <div class="point" style="left: 71.3%; top: 5.6%;">Brilliant Blue,<br>Purple Tint</div>
+      <div class="point" style="left: 83.333%; top: 72%;">Violet/Orange-Yellow</div>
+    </div>
   </body>
 </html>
